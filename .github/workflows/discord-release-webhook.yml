@@ -54,7 +54,7 @@ jobs:
         uses: tsickert/discord-webhook@v5.3.0
         if: success()
         with:
-          webhook-url: ${{ secrets.WEBHOOK_URL }}
+          webhook-url: ${{ secrets.RELEASE_WEBHOOK_URL }}
           embed-title: ${{ env.MESSAGE }}
           embed-url: https://github.com/krazyito65/WeakAuras2/releases/latest
           embed-description:  ${{ steps.readChanglog.outputs.text }}
