@@ -1,5 +1,5 @@
 # description of this workflow, can be anything you want
-name: Package and release
+name: Send Release Notifcations
 
 # we need to let GitHub know _when_ we want to release, typically only when we create a new tag.
 # this will target only tags, and not all pushes to the master branch.
@@ -7,54 +7,59 @@ name: Package and release
 # other branches or even pullrequests.
 on:
   push:
+    branches:
+      - '**'
     tags:
       - '**'
 
 # a workflow is built up as jobs, and within these jobs are steps
 jobs:
-
-  # "release" is a job, you can name it anything you want
-  release:
-
+  # "release-notifcations" is a job, you can name it anything you want
+  release-notifcations:
     # we can run our steps on pretty much anything, but the "ubuntu-latest" image is a safe bet
     runs-on: ubuntu-latest
 
     # specify the environment variables used by the packager, matching the secrets from the project on GitHub
     env:
-      MESSAGE: "WeakAuras: New Release Published"
-      # CF_API_KEY: ${{ secrets.CF_API_KEY }}
-      # WOWI_API_TOKEN: ${{ secrets.WOWI_API_TOKEN }}
-      # WAGO_API_TOKEN: ${{ secrets.WAGO_API_TOKEN }}
-      # GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}  # "GITHUB_TOKEN" is a secret always provided to the workflow
-      #                                            # for your own token, the name cannot start with "GITHUB_"
+      MESSAGE: "New Release"
 
     # "steps" holds a list of all the steps needed to package and release our AddOn
     steps:
-
       # we first have to clone the AddOn project, this is a required step
       - name: Clone project
         uses: actions/checkout@v4
         with:
           fetch-depth: 0  # gets git history for changelogs
-          
+
       - name: Generate Changelog
         id: Changelog
-        run: generate_changelog.sh
-        
+        run: ./generate_changelog.sh
+
+      - name: check python
+        id: Python
+        run: which -a python3; python3 -V
+
       - name: save changelog in variable
         uses: pCYSl5EDgo/cat@master
         id: readChanglog
         with:
-          path: CHANGELOG.md  
-      # # once cloned, we just run the GitHub Action for the packager project
-      # - name: Package and release
-      #   uses: BigWigsMods/packager@v2
-    #using Discord webhook to send release information
-      - name: Discord Webhook Action
+          path: CHANGELOG.md
+
+    # using Discord webhook to send release information
+      - name: Discord Release Webhook Action
         uses: tsickert/discord-webhook@v5.3.0
         if: success()
         with:
-          webhook-url: ${{ secrets.WEBHOOK_URL }}
+          webhook-url: ${{ secrets.RELEASE_WEBHOOK_URL }}
           embed-title: ${{ env.MESSAGE }}
-          embed-url: https://github.com/krazyito65/WeakAuras2/releases/latest
+          embed-url: https://github.com/WeakAuras/WeakAuras2/releases/latest
           embed-description:  ${{ steps.readChanglog.outputs.text }}
+
+      - name: Twitter Notification
+        uses: ethomson/send-tweet-action@v1
+        with:
+          status: "Hi, this is a test!"
+          consumer-key: ${{ secrets.TWITTER_CONSUMER_API_KEY }}
+          consumer-secret: ${{ secrets.TWITTER_CONSUMER_API_SECRET }}
+          access-token: ${{ secrets.TWITTER_ACCESS_TOKEN }}
+          access-token-secret: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
