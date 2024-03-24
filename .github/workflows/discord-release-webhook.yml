@@ -6,9 +6,9 @@ name: Send Release Notifcations
 # this part can be heavily customized to your liking, like targeting only tags that match a certain word,
 # other branches or even pullrequests.
 on:
-  push:
-    tags:
-      - '**'
+  workflow_dispatch:
+  release:
+    types: [published]
 
 # a workflow is built up as jobs, and within these jobs are steps
 jobs:
