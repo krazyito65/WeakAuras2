@@ -32,8 +32,11 @@ def get_changelog_text(changelog_file):
     match = re.search(regex, content, re.DOTALL)
 
     if not match:
+        print('=======================================')
         print('Could not find "Highlights" content.')
         print(content)
+        print('=======================================')
+        print('Going to provide an empty content')
         return ''
 
     return match.group(1).strip()
@@ -60,12 +63,14 @@ def get_latest_tag():
 
 
 def generate_twitter_post(content):
+    print('generating post')
     tag = get_latest_tag()
     release_url = WEAKAURAS_URL_RELEASE_URL.format(tag=tag)
     post = POST_TEMPLATE.format(tag=tag, highlight_content=content, url=release_url)
     return post
 
 def write_post_to_file(post):
+    print('writing post to file')
     with open('twitter_post.txt', mode='w') as twitter_post:
         twitter_post.write(post)
 
