@@ -56,10 +56,10 @@ jobs:
           embed-description:  ${{ steps.readChanglog.outputs.text }}
 
       - name: Twitter Notification
-        uses: infraway/tweet-action@v1.0.1
+        uses: nearform-actions/github-action-notify-twitter@master
         with:
-          status: Tweeted from Github Actions
-          api_key: ${{ secrets.TWITTER_API_KEY }}
-          api_key_secret: ${{ secrets.TWITTER_API_KEY_SECRET }}
-          access_token: ${{ secrets.TWITTER_ACCESS_TOKEN }}
-          access_token_secret: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
+          message: 'test github action'
+          twitter-app-key: ${{ secrets.TWITTER_API_KEY }}
+          twitter-app-secret: ${{ secrets.TWITTER_API_KEY_SECRET }}
+          twitter-access-token: ${{ secrets.TWITTER_ACCESS_TOKEN }}
+          twitter-access-token-secret: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
