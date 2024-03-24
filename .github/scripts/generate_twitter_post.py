@@ -34,12 +34,11 @@ def get_changelog_text(changelog_file):
     if not match:
         print('Could not find "Highlights" content.')
         print(content)
-        exit(1)
-    return match
+        return ''
 
-def shorten_highlight_content(content):
-    highlight_content = content.group(1).strip()
+    return match.group(1).strip()
 
+def shorten_highlight_content(highlight_content):
     base_length = get_empty_post_length()
 
     # MAX_POST_LENGTH - base_length = max highlight text length
