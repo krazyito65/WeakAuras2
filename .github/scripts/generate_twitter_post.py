@@ -33,6 +33,7 @@ def get_changelog_text(changelog_file):
 
     if not match:
         print('Could not find "Highlights" content.')
+        print(content)
         exit(1)
     return match
 
